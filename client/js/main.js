@@ -19,7 +19,8 @@ const colorPallete = [
 
 const BoardProperties = {
 	verticalOffset: 100,
-	edgeDeviceOffset: 75
+	edgeDeviceOffset: 75,
+	circleRadius: 100
 };
 
 //makes the canvas scale right for retina devices
@@ -137,7 +138,7 @@ $(document).ready(function() {
     // let images = document.getElementById("gamePieces");
     // images.style.visibility = 'hidden';
 
-    deviceNumber = 0;
+    deviceNumber = 4;
     totalDevices = 5;
 
 
@@ -196,26 +197,62 @@ function drawGame() {
     ctx.closePath();
     if(deviceNumber == 0){
     	for(var i = 0; i < totalDevices; i++){
+    		let topPosition =  i*19 + BoardProperties['verticalOffset'];
+    		let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
 
     		ctx.fillStyle = colorPallete[i];
+    		ctx.strokeStyle = colorPallete[i];
+    		ctx.lineWidth=4;
     		ctx.beginPath();
-    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], i*19 + BoardProperties['verticalOffset'], BoardProperties['edgeDeviceOffset'], 4);
+    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], topPosition, BoardProperties['edgeDeviceOffset'], 4);
     		ctx.fill();
     		ctx.closePath();
 
     		ctx.beginPath();
-    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight, BoardProperties['edgeDeviceOffset'], 4);
+    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], bottomPosition, BoardProperties['edgeDeviceOffset'], 4);
     		ctx.fill();
     		ctx.closePath();
 
+    		let heightDifference = Math.abs(topPosition - bottomPosition);
+
+    		let circleCenterY = (normalizedHeight + BoardProperties['verticalOffset'])  / 2;
+    		let circleCenterX = normalizedWidth - BoardProperties['edgeDeviceOffset'];
+
+    		let radius = BoardProperties['circleRadius'];
 
     		ctx.beginPath();
-			ctx.moveTo(normalizedWidth - BoardProperties['edgeDeviceOffset'],i*19 + BoardProperties['verticalOffset']);
-			ctx.bezierCurveTo(20,100,200,100,200,20);
+			ctx.arc(circleCenterX,circleCenterY - 10,heightDifference / 2,3*Math.PI/2,Math.PI/2, true);
 			ctx.stroke();
     	}
     } else if (deviceNumber == totalDevices - 1){
+		for(var i = 0; i < totalDevices; i++){
+    		let topPosition =  i*19 + BoardProperties['verticalOffset'];
+    		let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
 
+    		ctx.fillStyle = colorPallete[i];
+    		ctx.strokeStyle = colorPallete[i];
+    		ctx.lineWidth=4;
+    		ctx.beginPath();
+    		ctx.rect(0, topPosition, BoardProperties['edgeDeviceOffset'], 4);
+    		ctx.fill();
+    		ctx.closePath();
+
+    		ctx.beginPath();
+    		ctx.rect(0, bottomPosition, BoardProperties['edgeDeviceOffset'], 4);
+    		ctx.fill();
+    		ctx.closePath();
+
+    		let heightDifference = Math.abs(topPosition - bottomPosition);
+
+    		let circleCenterY = (normalizedHeight + BoardProperties['verticalOffset'])  / 2;
+    		let circleCenterX = BoardProperties['edgeDeviceOffset'];
+
+    		let radius = BoardProperties['circleRadius'];
+
+    		ctx.beginPath();
+			ctx.arc(circleCenterX,circleCenterY - 10,heightDifference / 2,3*Math.PI/2,Math.PI/2, false);
+			ctx.stroke();
+    	}
     } else{
     	for(var i = 0; i < totalDevices; i++){
     		ctx.fillStyle = colorPallete[i];
@@ -227,7 +264,7 @@ function drawGame() {
     		ctx.beginPath();
     		ctx.rect(0, (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight, normalizedWidth, 4);
     		ctx.fill();
-    		ctx.closePath();
+    		ctx.stroke();
     	}
     }
 
