@@ -128,6 +128,15 @@ function getTouchPos(canvasDom, touchEvent) {
 }
 
 $(document).ready(function() {
+
+	$("#createroom").click(function(){
+		console.log("create room clicked");
+	});
+
+	$("#joinroom").click(function(){
+		console.log("join room clicked");
+	});
+
     canvas = document.getElementById("game");
 
     ctx = canvas.getContext("2d");
