@@ -9,6 +9,9 @@ let timer;
 let deviceNumber;
 let totalDevices;
 
+let courseWidth = 0;
+let courseHeight = 0;
+
 const colorPallete = [
 	"#ff9a00",
 	"#f93636",
@@ -22,6 +25,8 @@ const BoardProperties = {
 	edgeDeviceOffset: 75,
 	circleRadius: 100
 };
+
+let cars = [];
 
 //makes the canvas scale right for retina devices
 function scaleCanvas(canvas, context, width, height) {
@@ -112,11 +117,34 @@ function backingScale(context) {
     return 1;
 }
 
-class Car{
-	constructor(color, trackNumber){
-		this.color = color;
-		this.trackNumber = trackNumber;
+class Point{
+	constructor(x,y){
+		this.x = x;
+		this.y = y;
 	}
+}
+
+class Car{
+	constructor(trackNumber){
+		this.trackNumber = trackNumber;
+		this.color = colorPallete[trackNumber];
+		this.progress = 0;
+	}
+
+	render(ctx, width, height, circleCenterX, circleCenterY){
+		let x = Math.abs(width * Math.cos(Math.PI + this.progress * 2 * Math.PI) + circleCenterX);
+		let y = Math.abs(height * Math.cos(Math.PI + this.progress * 2 * Math.PI) + circleCenterY);
+		ctx.beginPath();
+		ctx.rect(x,y,7,13);
+		ctx.fill();
+		ctx.stroke();
+	}
+
+	accelerate(){
+		this.progress += 0.1;
+	}
+
+
 }
 
 // Get the position of a touch relative to the canvas
@@ -138,14 +166,18 @@ $(document).ready(function() {
     // let images = document.getElementById("gamePieces");
     // images.style.visibility = 'hidden';
 
-    deviceNumber = 4;
+    deviceNumber = 0;
     totalDevices = 5;
 
 
     //scale the canvas properly
     scaleCanvas(canvas, ctx, aspectRatio()[0], aspectRatio()[1]);
 
-
+    cars.push(new Car(0));
+    cars.push(new Car(1));
+    cars.push(new Car(2));
+    cars.push(new Car(3));
+    cars.push(new Car(4));
 
     //start the canvas updates
     timer = setInterval(drawGame, updateTime);
@@ -159,10 +191,17 @@ $(document).ready(function() {
         //let mouseEvent = new MouseEvent("mouseup", {});
         //canvas.dispatchEvent(mouseEvent);
     }, false);
-    canvas.addEventListener("touchmove", function(e) {
-        let touch = e.touches[0];
+    // canvas.addEventListener("touchmove", function(e) {
+    //     let touch = e.touches[0];
+    //     cars[deviceNumber].accelerate();
 
-    }, false);
+    // }, false);
+
+    canvas.addEventListener('pointerdown', function onFirstPointer(e) {
+    	console.log("test");
+    	cars[deviceNumber].accelerate();
+	}, false);
+
 });
 
 function aspectRatio() {
@@ -266,6 +305,15 @@ function drawGame() {
     		ctx.fill();
     		ctx.stroke();
     	}
+    }
+
+    for(let i = 0; i < cars.length; i++){
+    	let topPosition =  i*19 + BoardProperties['verticalOffset'];
+    	let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
+
+    	let heightDifference = Math.abs(topPosition - bottomPosition);
+
+    	cars[i].render(ctx,normalizedWidth, heightDifference, normalizedWidth / 2, heightDifference / 2 - BoardProperties['verticalOffset']);
     }
 
 
