@@ -136,6 +136,8 @@ class Car{
 	render(ctx, width, height, circleCenterX, circleCenterY){
 		let x = Math.abs(width * Math.cos(Math.PI + this.progress * 2 * Math.PI) + circleCenterX);
 		let y = Math.abs(height * Math.cos(Math.PI + this.progress * 2 * Math.PI) + circleCenterY);
+		ctx.fillStyle = colorPallete[this.trackNumber];
+    	ctx.strokeStyle = colorPallete[this.trackNumber];
 		ctx.beginPath();
 		ctx.rect(x,y,7,13);
 		ctx.fill();
