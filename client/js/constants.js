@@ -1,0 +1,2 @@
+const CREATE_ROOM = 'CREATE_ROOM'
+const JOIN_ROOM = 'JOIN_ROOM'

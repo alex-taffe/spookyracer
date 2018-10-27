@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
+const event = require('./constants');
+
 const io = require('socket.io')(server, {
     transports: ['websocket', 'polling'],
     serveClient: false
@@ -28,6 +30,14 @@ if (process.env.NODE_ENV === 'development') {
 // set up socket connection
 io.on('connection', socket => {
     console.log('a user connected');
+
+    socket.on(event.JOIN_ROOM, () => {
+        console.log('Joining room...');
+    });
+
+    socket.on(event.CREATE_ROOM, () => {
+        console.log('Joining room...');
+    });
 });
 
 // listen on port
