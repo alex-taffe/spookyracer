@@ -1,9 +1,21 @@
 const express = require('express');
-
 const app = express();
+const server = require('http').Server(app);
+
+const PORT = process.env.PORT || 3000;
+
+app.use(express.static(__dirname + '/../client'));
 
 app.get('/', (req, res) => {
-    res.send('Wassup');
+    res.sendFile('/client/index.html');
+});
+
+const io = require('socket.io')(server, {
+    path: '/',
+    serveClient: false,
+    pingInterval: 10000,
+    pingTimeout: 5000,
+    cookie: false
 });
 
 if (process.env.NODE_ENV === 'development') {
@@ -16,6 +28,10 @@ if (process.env.NODE_ENV === 'development') {
     });
 }
 
-app.listen(8000, () => {
-    console.log('Server running at localhost:8000...');
+io.on('connection', socket => {
+    console.log('a user connected');
+});
+
+app.listen(PORT, () => {
+    console.log('Server running...');
 });
