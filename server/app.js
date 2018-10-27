@@ -49,6 +49,7 @@ io.on('connection', socket => {
                 // push to player list
                 gamerooms[room_number].players.push(players[socket.id]);
                 socket.join(room_number);
+                // socket.broadcast.to(room_number).emit('PLAYER_JOINED', gamerooms[room_number].players);
                 callback(true, `Joined room ${room_number}`, socket.id);
             } else {
                 callback(false, `${room_number} is full!`);
@@ -84,9 +85,14 @@ io.on('connection', socket => {
     /**
      * Accelerate the car in question
      */
-    socket.on(event.ACCELERATE, (room_number, socketid) => {
-        players[socketid].progress++;
-        socket.broadcast.to(room_number).emit("POSITION_UPDATE", socketid);
+    socket.on(event.ACCELERATE, (room_number, socketid, progress) => {
+        players[socketid].progress = progress;
+        let index = gamerooms[room_number].players.indexOf(players[socketid]);
+        if (index > -1) {
+            gamerooms[room_number].players.splice(index, 1);
+        }
+        gamerooms[room_number].players.push(players[socketid]);
+        socket.broadcast.to(room_number).emit('POSITION_UPDATE', gamerooms[room_number].players);
     });
 
     /**
@@ -94,7 +100,11 @@ io.on('connection', socket => {
      */
     socket.on(event.LAP, (room_number, socketid) => {
         players[socketid].lap++;
-        socket.broadcast.to(room_number).emit("LAP", socketid);
+        let index = gamerooms[room_number].players.indexOf(players[socketid]);
+        if (index > -1) {
+            gamerooms[room_number].players.splice(index, 1);
+        }
+        socket.broadcast.to(room_number).emit('LAP', gamerooms[room_number].players);
     });
 
     /**
