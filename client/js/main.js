@@ -23,7 +23,7 @@ const GameStates = Object.freeze({
 	LostGame: 5,
 });
 
-let gameState = GameStates.WaitingToStart;
+let gameState = GameStates.WaitingToJoin;
 
 const colorPallete = [
 	"#ff9a00",
@@ -254,9 +254,15 @@ function drawGame() {
     ctx.closePath();
 
     if(gameState == GameStates.WaitingToJoin){
-
+    	ctx.save();
+		ctx.translate(normalizedWidth / 2, 0);
+		ctx.textAlign = "center";
+		ctx.font = "25px Arial";
+		ctx.fillStyle = "#FFFFFF"; //score font color
+		ctx.fillText('Join a game!', 0, 90); //player 1
+		ctx.restore();
     } else if(gameState == GameStates.WaitingToStart){
-    	for(var i = 0; i < 5; i++){
+    	for(var i = 0; i < players.length; i++){
     		ctx.save();
 			ctx.translate(normalizedWidth / 2, 0);
 			ctx.textAlign = "center";
