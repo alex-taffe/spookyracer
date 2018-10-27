@@ -12,6 +12,8 @@ let totalDevices;
 let courseWidth = 0;
 let courseHeight = 0;
 
+let touchOccuring = false;
+
 const colorPallete = [
 	"#ff9a00",
 	"#f93636",
@@ -141,7 +143,7 @@ class Car{
 	}
 
 	accelerate(){
-		this.progress += 0.1;
+		this.progress += 0.01;
 	}
 
 
@@ -186,21 +188,15 @@ $(document).ready(function() {
     canvas.addEventListener("touchstart", function(e) {
         mousePos = getTouchPos(canvas, e);
         e.preventDefault();
+        touchOccuring = true;
+        console.log("start");
     }, false);
     canvas.addEventListener("touchend", function(e) {
-        //let mouseEvent = new MouseEvent("mouseup", {});
-        //canvas.dispatchEvent(mouseEvent);
+    	console.log("END");
+	    let mouseEvent = new MouseEvent("mouseup", {});
+	    canvas.dispatchEvent(mouseEvent);
+	    touchOccuring = false;
     }, false);
-    // canvas.addEventListener("touchmove", function(e) {
-    //     let touch = e.touches[0];
-    //     cars[deviceNumber].accelerate();
-
-    // }, false);
-
-    canvas.addEventListener('pointerdown', function onFirstPointer(e) {
-    	console.log("test");
-    	cars[deviceNumber].accelerate();
-	}, false);
 
 });
 
@@ -224,6 +220,10 @@ function aspectRatio() {
 
 
 function drawGame() {
+
+	if(touchOccuring){
+		cars[deviceNumber].accelerate();
+	}
 
 	let normalizedWidth = canvas.width / devicePixelRatio;
 	let normalizedHeight = canvas.height / devicePixelRatio;
