@@ -3,13 +3,24 @@ let devMode = false;
 
 const updateTime = 15;
 
-
 let canvas;
 let ctx;
 let timer;
-let player1Paddle;
-let player2Paddle;
-let puck;
+let deviceNumber;
+let totalDevices;
+
+const colorPallete = [
+	"#ff9a00",
+	"#f93636",
+	"#09ff00",
+	"#c900ff",
+	"#fbfaf4"
+];
+
+const BoardProperties = {
+	verticalOffset: 100,
+	edgeDeviceOffset: 75
+};
 
 //makes the canvas scale right for retina devices
 function scaleCanvas(canvas, context, width, height) {
@@ -124,6 +135,9 @@ $(document).ready(function() {
     // let images = document.getElementById("gamePieces");
     // images.style.visibility = 'hidden';
 
+    deviceNumber = 0;
+    totalDevices = 5;
+
 
     //scale the canvas properly
     scaleCanvas(canvas, ctx, aspectRatio()[0], aspectRatio()[1]);
@@ -178,6 +192,42 @@ function drawGame() {
     ctx.rect(0,0, normalizedWidth, normalizedHeight);
     ctx.fill();
     ctx.closePath();
+    if(deviceNumber == 0){
+    	for(var i = 0; i < totalDevices; i++){
+
+    		ctx.fillStyle = colorPallete[i];
+    		ctx.beginPath();
+    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], i*19 + BoardProperties['verticalOffset'], BoardProperties['edgeDeviceOffset'], 4);
+    		ctx.fill();
+    		ctx.closePath();
+
+    		ctx.beginPath();
+    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight, BoardProperties['edgeDeviceOffset'], 4);
+    		ctx.fill();
+    		ctx.closePath();
+
+
+    		ctx.beginPath();
+			ctx.moveTo(normalizedWidth - BoardProperties['edgeDeviceOffset'],i*19 + BoardProperties['verticalOffset']);
+			ctx.bezierCurveTo(20,100,200,100,200,20);
+			ctx.stroke();
+    	}
+    } else if (deviceNumber == totalDevices - 1){
+
+    } else{
+    	for(var i = 0; i < totalDevices; i++){
+    		ctx.fillStyle = colorPallete[i];
+    		ctx.beginPath();
+    		ctx.rect(0, i*19 + BoardProperties['verticalOffset'], normalizedWidth, 4);
+    		ctx.fill();
+    		ctx.closePath();
+
+    		ctx.beginPath();
+    		ctx.rect(0, (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight, normalizedWidth, 4);
+    		ctx.fill();
+    		ctx.closePath();
+    	}
+    }
 
 
     ctx.save();
