@@ -119,7 +119,9 @@ class Car {
 
 // Get the position of a touch relative to the canvas
 function getTouchPos(canvasDom, touchEvent) {
+
     let rect = canvasDom.getBoundingClientRect();
+
     return {
         x: touchEvent.touches[0].clientX - rect.left,
         y: touchEvent.touches[0].clientY - rect.top
@@ -127,6 +129,7 @@ function getTouchPos(canvasDom, touchEvent) {
 }
 
 $(document).ready(function() {
+
     let room_input = $('#roomnnumber');
     $('#gas').on('click', () => accelerate());
     $('#createroom').on('click', () => {
@@ -157,7 +160,7 @@ $(document).ready(function() {
     cars.push(new Car(3));
     cars.push(new Car(4));
 
-    //start the canvas updates
+    // Start the canvas updates
     timer = setInterval(drawGame, updateTime);
 
     // Set up touch events for mobile, etc
@@ -187,7 +190,6 @@ function aspectRatio() {
     let width = $('body').width();
     let height = $('body').height();
     let ratio = width / height;
-
     let destinationRatio = 96 / 100;
 
     if (ratio == destinationRatio) {
@@ -202,6 +204,7 @@ function aspectRatio() {
 }
 
 function drawGame() {
+    
     if (touchOccuring) {
         cars[deviceNumber].accelerate();
     }
@@ -209,7 +212,7 @@ function drawGame() {
     let normalizedWidth = canvas.width / devicePixelRatio;
     let normalizedHeight = canvas.height / devicePixelRatio;
 
-    //clear background
+    // Clear background
     ctx.fillStyle = '#000000';
     ctx.beginPath();
     ctx.rect(0, 0, normalizedWidth, normalizedHeight);
