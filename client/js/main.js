@@ -14,6 +14,17 @@ let courseHeight = 0;
 
 let touchOccuring = false;
 
+const GameStates = Object.freeze({
+	WaitingToJoin: 0,
+	WaitingToStart: 1,
+	Countdown: 2,
+	InGame: 3,
+	WonGame: 4,
+	LostGame: 5,
+});
+
+let gameState = GameStates.WaitingToStart;
+
 const colorPallete = [
 	"#ff9a00",
 	"#f93636",
@@ -131,6 +142,7 @@ class Car{
 		this.trackNumber = trackNumber;
 		this.color = colorPallete[trackNumber];
 		this.progress = 0;
+		this.laps = 1;
 	}
 
 	render(ctx, width, height, circleCenterX, circleCenterY){
@@ -146,6 +158,10 @@ class Car{
 
 	accelerate(){
 		this.progress += 0.01;
+		if(this.progress >= 1){
+			this.laps++;
+			this.progress = 0;
+		}
 	}
 
 
@@ -236,88 +252,102 @@ function drawGame() {
     ctx.rect(0,0, normalizedWidth, normalizedHeight);
     ctx.fill();
     ctx.closePath();
-    if(deviceNumber == 0){
-    	for(var i = 0; i < totalDevices; i++){
-    		let topPosition =  i*19 + BoardProperties['verticalOffset'];
-    		let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
 
-    		ctx.fillStyle = colorPallete[i];
-    		ctx.strokeStyle = colorPallete[i];
-    		ctx.lineWidth=4;
-    		ctx.beginPath();
-    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], topPosition, BoardProperties['edgeDeviceOffset'], 4);
-    		ctx.fill();
-    		ctx.closePath();
+    if(gameState == GameStates.WaitingToJoin){
 
-    		ctx.beginPath();
-    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], bottomPosition, BoardProperties['edgeDeviceOffset'], 4);
-    		ctx.fill();
-    		ctx.closePath();
-
-    		let heightDifference = Math.abs(topPosition - bottomPosition);
-
-    		let circleCenterY = (normalizedHeight + BoardProperties['verticalOffset'])  / 2;
-    		let circleCenterX = normalizedWidth - BoardProperties['edgeDeviceOffset'];
-
-    		let radius = BoardProperties['circleRadius'];
-
-    		ctx.beginPath();
-			ctx.arc(circleCenterX,circleCenterY - 10,heightDifference / 2,3*Math.PI/2,Math.PI/2, true);
-			ctx.stroke();
+    } else if(gameState == GameStates.WaitingToStart){
+    	for(var i = 0; i < 5; i++){
+    		ctx.save();
+			ctx.translate(normalizedWidth / 2, 0);
+			ctx.textAlign = "center";
+			ctx.font = "25px Arial";
+			ctx.fillStyle = colorPallete[i]; //score font color
+			ctx.fillText(`Player ${i + 1}`, 0, 90 + i * 30); //player 1
+			ctx.restore();
     	}
-    } else if (deviceNumber == totalDevices - 1){
-		for(var i = 0; i < totalDevices; i++){
-    		let topPosition =  i*19 + BoardProperties['verticalOffset'];
-    		let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
+    } else if(gameState == GameStates.InGame){
+	    if(deviceNumber == 0){
+	    	for(var i = 0; i < totalDevices; i++){
+	    		let topPosition =  i*19 + BoardProperties['verticalOffset'];
+	    		let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
 
-    		ctx.fillStyle = colorPallete[i];
-    		ctx.strokeStyle = colorPallete[i];
-    		ctx.lineWidth=4;
-    		ctx.beginPath();
-    		ctx.rect(0, topPosition, BoardProperties['edgeDeviceOffset'], 4);
-    		ctx.fill();
-    		ctx.closePath();
+	    		ctx.fillStyle = colorPallete[i];
+	    		ctx.strokeStyle = colorPallete[i];
+	    		ctx.lineWidth=4;
+	    		ctx.beginPath();
+	    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], topPosition, BoardProperties['edgeDeviceOffset'], 4);
+	    		ctx.fill();
+	    		ctx.closePath();
 
-    		ctx.beginPath();
-    		ctx.rect(0, bottomPosition, BoardProperties['edgeDeviceOffset'], 4);
-    		ctx.fill();
-    		ctx.closePath();
+	    		ctx.beginPath();
+	    		ctx.rect(normalizedWidth - BoardProperties['edgeDeviceOffset'], bottomPosition, BoardProperties['edgeDeviceOffset'], 4);
+	    		ctx.fill();
+	    		ctx.closePath();
 
-    		let heightDifference = Math.abs(topPosition - bottomPosition);
+	    		let heightDifference = Math.abs(topPosition - bottomPosition);
 
-    		let circleCenterY = (normalizedHeight + BoardProperties['verticalOffset'])  / 2;
-    		let circleCenterX = BoardProperties['edgeDeviceOffset'];
+	    		let circleCenterY = (normalizedHeight + BoardProperties['verticalOffset'])  / 2;
+	    		let circleCenterX = normalizedWidth - BoardProperties['edgeDeviceOffset'];
 
-    		let radius = BoardProperties['circleRadius'];
+	    		let radius = BoardProperties['circleRadius'];
 
-    		ctx.beginPath();
-			ctx.arc(circleCenterX,circleCenterY - 10,heightDifference / 2,3*Math.PI/2,Math.PI/2, false);
-			ctx.stroke();
-    	}
-    } else{
-    	for(var i = 0; i < totalDevices; i++){
-    		ctx.fillStyle = colorPallete[i];
-    		ctx.beginPath();
-    		ctx.rect(0, i*19 + BoardProperties['verticalOffset'], normalizedWidth, 4);
-    		ctx.fill();
-    		ctx.closePath();
+	    		ctx.beginPath();
+				ctx.arc(circleCenterX,circleCenterY - 10,heightDifference / 2,3*Math.PI/2,Math.PI/2, true);
+				ctx.stroke();
+	    	}
+	    } else if (deviceNumber == totalDevices - 1){
+			for(var i = 0; i < totalDevices; i++){
+	    		let topPosition =  i*19 + BoardProperties['verticalOffset'];
+	    		let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
 
-    		ctx.beginPath();
-    		ctx.rect(0, (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight, normalizedWidth, 4);
-    		ctx.fill();
-    		ctx.stroke();
-    	}
-    }
+	    		ctx.fillStyle = colorPallete[i];
+	    		ctx.strokeStyle = colorPallete[i];
+	    		ctx.lineWidth=4;
+	    		ctx.beginPath();
+	    		ctx.rect(0, topPosition, BoardProperties['edgeDeviceOffset'], 4);
+	    		ctx.fill();
+	    		ctx.closePath();
 
-    for(let i = 0; i < cars.length; i++){
-    	let topPosition =  i*19 + BoardProperties['verticalOffset'];
-    	let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
+	    		ctx.beginPath();
+	    		ctx.rect(0, bottomPosition, BoardProperties['edgeDeviceOffset'], 4);
+	    		ctx.fill();
+	    		ctx.closePath();
 
-    	let heightDifference = Math.abs(topPosition - bottomPosition);
+	    		let heightDifference = Math.abs(topPosition - bottomPosition);
 
-    	cars[i].render(ctx,normalizedWidth, heightDifference, normalizedWidth / 2, heightDifference / 2 - BoardProperties['verticalOffset']);
-    }
+	    		let circleCenterY = (normalizedHeight + BoardProperties['verticalOffset'])  / 2;
+	    		let circleCenterX = BoardProperties['edgeDeviceOffset'];
 
+	    		let radius = BoardProperties['circleRadius'];
+
+	    		ctx.beginPath();
+				ctx.arc(circleCenterX,circleCenterY - 10,heightDifference / 2,3*Math.PI/2,Math.PI/2, false);
+				ctx.stroke();
+	    	}
+	    } else{
+	    	for(var i = 0; i < totalDevices; i++){
+	    		ctx.fillStyle = colorPallete[i];
+	    		ctx.beginPath();
+	    		ctx.rect(0, i*19 + BoardProperties['verticalOffset'], normalizedWidth, 4);
+	    		ctx.fill();
+	    		ctx.closePath();
+
+	    		ctx.beginPath();
+	    		ctx.rect(0, (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight, normalizedWidth, 4);
+	    		ctx.fill();
+	    		ctx.stroke();
+	    	}
+	    }
+
+	    for(let i = 0; i < cars.length; i++){
+	    	let topPosition =  i*19 + BoardProperties['verticalOffset'];
+	    	let bottomPosition = (totalDevices - i - 1)*19 - BoardProperties['verticalOffset'] + normalizedHeight;
+
+	    	let heightDifference = Math.abs(topPosition - bottomPosition);
+
+	    	cars[i].render(ctx,normalizedWidth, heightDifference, normalizedWidth / 2, heightDifference / 2 - BoardProperties['verticalOffset']);
+	    }
+	}
 
     ctx.save();
 	ctx.translate(normalizedWidth / 2, 0);
