@@ -17,5 +17,5 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.listen(8000, () => {
-    console.log('Server running...');
+    console.log('Server running at localhost:8000...');
 });
