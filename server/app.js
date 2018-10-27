@@ -49,8 +49,8 @@ io.on('connection', socket => {
                 // push to player list
                 gamerooms[room_number].players.push(players[socket.id]);
                 socket.join(room_number);
-                // socket.broadcast.to(room_number).emit('PLAYER_JOINED', gamerooms[room_number].players);
-                callback(true, `Joined room ${room_number}`, socket.id);
+                socket.broadcast.to(room_number).emit('PLAYER_JOINED', gamerooms[room_number].players);
+                callback(true, `Joined room ${room_number}`, socket.id, gamerooms[room_number].players);
             } else {
                 callback(false, `${room_number} is full!`);
             }
@@ -78,7 +78,7 @@ io.on('connection', socket => {
             };
             console.log(`Created room number ${room_number}`);
             socket.join(room_number);
-            callback(true, `Created room ${room_number}!`, socket.id);
+            callback(true, `Created room ${room_number}!`, socket.id, gamerooms[room_number].players);
         }
     });
 

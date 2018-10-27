@@ -16,7 +16,7 @@ let create_room = room_input => {
     soc.emit(CREATE_ROOM, room_number, create_room_callback);
 };
 
-let accelerate = (progress) => {
+let accelerate = progress => {
     console.log('Accelerating...');
     soc.emit(ACCELERATE, room_number, socid, progress);
 };
@@ -31,10 +31,10 @@ let create_room_callback = (success, string, socketid) => {
     }
 };
 
-let join_room_callback = (success, string, socketid) => {
+let join_room_callback = (success, string, socketid, newplayers) => {
     if (success) {
         socid = socketid;
-        players.push(socketid);
+        players = newplayers;
         $('#createroom').hide();
         $('#joinroom').hide();
         $('#roomnnumber').hide();
@@ -42,8 +42,6 @@ let join_room_callback = (success, string, socketid) => {
 };
 
 $(document).ready(function() {
-    let room_input = $('#roomnnumber');
-
     soc.on('connect', function() {
         console.log('Connected...');
     });
@@ -56,8 +54,7 @@ $(document).ready(function() {
         console.log(playermap);
     });
 
-    $('#createroom').on('click', () => create_room(room_input));
-    $('#gas').on('click', () => accelerate());
-
-    $('#joinroom').on('click', () => join_room(room_input));
+    soc.on('PLAYER_JOINED', playerlist => {
+        players = playerlist;
+    });
 });
