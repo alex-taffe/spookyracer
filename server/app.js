@@ -36,7 +36,7 @@ io.on('connection', socket => {
     });
 
     socket.on(event.CREATE_ROOM, () => {
-        console.log('Joining room...');
+        console.log('Create room...');
     });
 });
 
