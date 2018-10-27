@@ -1,23 +1,20 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-
+const io = require('socket.io')(server, {
+    transports: ['websocket', 'polling'],
+    serveClient: false
+});
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(__dirname + '/../client'));
 
+// route main requests to html
 app.get('/', (req, res) => {
     res.sendFile('/client/index.html');
 });
 
-const io = require('socket.io')(server, {
-    path: '/',
-    serveClient: false,
-    pingInterval: 10000,
-    pingTimeout: 5000,
-    cookie: false
-});
-
+// error handling
 if (process.env.NODE_ENV === 'development') {
     // only use in development
     app.use(errorHandler());
@@ -28,10 +25,12 @@ if (process.env.NODE_ENV === 'development') {
     });
 }
 
+// set up socket connection
 io.on('connection', socket => {
     console.log('a user connected');
 });
 
-app.listen(PORT, () => {
-    console.log('Server running...');
+// listen on port
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

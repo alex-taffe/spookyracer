@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Spooky Racer</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
-</head>
-<body>
 
-	<canvas id="game"></canvas>
-	<div id="startGameOverlay"></div>
+	<head>
+		<title>Spooky Racer</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+	</head>
+
+	<body>
+
+		<canvas id="game"></canvas>
+		<div id="startGameOverlay"></div>
 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js" integrity="sha256-pMea2a/7QK1RhYpSh7rIpKSajxu4j61VmpJCJ31KrfA=" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-	<script src="js/main.js"></script>
-	<script>
-	  // $(function () {
-	  //   var socket = io();
-	  //   $('form').submit(function(){
-	  //     socket.emit('chat message', $('#m').val());
-	  //     $('#m').val('');
-	  //     return false;
-	  //   });
-	  // });
-	</script>
-</body>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js" integrity="sha256-pMea2a/7QK1RhYpSh7rIpKSajxu4j61VmpJCJ31KrfA="
+		 crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		 crossorigin="anonymous"></script>
+		<script src="js/main.js"></script>
+		<script>
+			var soc = io();
+			var socUrl = "/"
+			soc.on('connect', function () {
+				console.log('Connected...');
+			});
+		</script>
+	</body>
+
 </html>
