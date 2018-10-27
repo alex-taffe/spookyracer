@@ -42,6 +42,7 @@ let join_room_callback = (success, string, socketid, newplayers) => {
 };
 
 $(document).ready(function() {
+      
     soc.on('connect', function() {
         console.log('Connected...');
     });

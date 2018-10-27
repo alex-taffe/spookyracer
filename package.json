@@ -18,6 +18,7 @@
   "homepage": "https://github.com/alex-taffe/spookyracer#readme",
   "dependencies": {
     "express": "^4.16.4",
+    "lint": "^1.1.2",
     "nodemon": "^1.18.5",
     "socketio": "^1.0.0"
   }
